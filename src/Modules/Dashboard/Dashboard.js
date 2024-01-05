@@ -18,8 +18,8 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [socket, setSocket] = useState(null);
   const messageRef = useRef();
-  const [show1, setShow1] = useState(true);
-  const [show2, setShow2] = useState(true);
+  const [show1, setShow1] = useState(false);
+  const [show2, setShow2] = useState(false);
 
   useEffect(() => {
     const socket = io("http://localhost:8000", {
@@ -141,6 +141,35 @@ const Dashboard = () => {
     });
     setMessage("");
   };
+
+  const handleLogout = async () => {
+    try {
+      // Assuming you have user stored in state
+      const userId = user?.id;
+
+      const response = await fetch("http://localhost:8000/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (response.ok) {
+        // Clear user data from local storage
+        localStorage.removeItem("user:detail");
+        localStorage.removeItem("user:token");
+
+        // Redirect to login or home page
+        // You may use React Router or any other navigation method
+        window.location.href = "/login";
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
   return (
     <div className="w-screen h-screen flex flex-row no-scrollbar">
       {/* large screen div */}
@@ -191,23 +220,25 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      {/* md and sm screen div
-      {!show1 && (
-        <div className="w-[100%] h-full z-1 bg-secondary overflow-scroll no-scrollbar lg:hidden block pr-96">
-          <div className="flex flex-col mx-10 items-center my-8">
+      {/* md and sm screen div */}
+      {show1 && (
+        <div className="w-screen z-50 h-screen fixed bg-secondary overflow-scroll no-scrollbar lg:hidden block">
+          <div className="pl-6 pt-3" onClick={() => setShow1(false)}>
+            <LuPanelRightOpen size={23} />
+          </div>
+
+          <div className="flex mx-10 items-center my-8">
             <div className="border border-primary p-2 rounded-full">
-              <img src={logo} alt="logo" className="w-full h-auto" />
+              <img src={logo} alt="logo" width={75} height={75} />
             </div>
             <div className="ml-3">
-              <h3 className="text-2xl text-center capitalize">
-                {user?.fullName}
-              </h3>
-              <p className="text-xl font-light">My Account</p>
+              <h3 className="text-2xl capitalize">{user?.fullName}</h3>
+              <p className="text-lg font-light">My Account</p>
             </div>
           </div>
           <hr />
           <div className="mx-10 mt-10">
-            <div className="text-primary text-3xl">Messages</div>
+            <div className="text-primary text-lg">Messages</div>
             <div>
               {conversations.length > 0 ? (
                 conversations.map(({ conversationId, user }) => {
@@ -223,10 +254,10 @@ const Dashboard = () => {
                           <img src={logo} alt="logo" width={60} height={60} />
                         </div>
                         <div className="ml-3">
-                          <h3 className="text-2xl font-semibold capitalize">
+                          <h3 className="text-lg font-semibold capitalize">
                             {user?.fullName}
                           </h3>
-                          <p className="text-xl font-light text-gray-600">
+                          <p className="text-sm font-light text-gray-600">
                             {user?.email}
                           </p>
                         </div>
@@ -242,7 +273,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      )} */}
+      )}
       {/* large screen div */}
       <div className="w-[50%] lg:block items-center hidden relative h-full overflow-hidden bg-white flex-col px-4 pt-10">
         {messages?.receiver?.fullName && (
@@ -259,6 +290,12 @@ const Dashboard = () => {
                   {messages?.receiver?.email}
                 </p>
               </div>
+            </div>
+            <div
+              className="text-blue-400 font-semibold cursor-pointer"
+              onClick={handleLogout}
+            >
+              <h1>Logout</h1>
             </div>
             {/* <div className="cursor-pointer">
                 <FiPhoneOutgoing />
@@ -319,89 +356,98 @@ const Dashboard = () => {
           </div>
         )}
       </div>
-      <div onClick={() => setShow1(!show1)} className="lg:hidden p-4">
-        <LuPanelRightOpen size={40} color="blue" />
-      </div>
       {/* md and sm screen div */}
-      <div className="w-[100%] lg:hidden h-full  bg-white flex flex-col">
-        <div className="items-center justify-center">
-          {messages?.receiver?.fullName && (
-            <div className="w-[100%] bg-secondary h-[80px] mt-3  rounded-full flex items-center px-10 justify-between py-2">
-              <div className="flex">
-                <div className="cursor-pointer">
-                  <img src={logo} alt="logo" width={60} height={60} />
-                </div>
-                <div className="ml-3 pt-1">
-                  <h3 className="text-lg capitalize">
-                    {messages?.receiver?.fullName}
-                  </h3>
-                  <p className="text-sm font-light text-gray-600">
-                    {messages?.receiver?.email}
-                  </p>
-                </div>
-              </div>
-              <div className="cursor-pointer">
-                <FiPhoneOutgoing />
-              </div>
-            </div>
-          )}
-          <div className="h-[60%] w-full overflow-scroll no-scrollbar shadow-sm">
-            <div className="p-14">
-              {messages?.messages?.length > 0 ? (
-                messages.messages.map(({ message, user: { id } = {} }) => {
-                  return (
-                    <>
-                      <div
-                        className={`max-w-[50%] rounded-b-lg p-4 mb-7 ${
-                          id === user?.id
-                            ? "bg-primary rounded-tl-lg ml-auto text-white"
-                            : "bg-secondary rounded-tr-lg"
-                        }`}
-                      >
-                        {message}
-                      </div>
-                      <div ref={messageRef}></div>
-                    </>
-                  );
-                })
-              ) : (
-                <div className="text-center text-2xl font-semibold pb-80 pt-80">
-                  No Messages or No Conversations Selected
-                </div>
-              )}
-            </div>
+      <div className="w-screen lg:hidden items-center block relative h-full overflow-hidden bg-white flex-col px-4 pt-16">
+        <div className="flex justify-between">
+          <div className="lg:hidden" onClick={() => setShow1(true)}>
+            <LuPanelLeftOpen size={23} />
           </div>
-          {messages?.receiver?.fullName && (
-            <div className="p-14 w-full flex items-center">
-              <Input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type a message..."
-                className="w-[75%]"
-                type="text"
-                inputClassName="p-4 border-0 shadow-lg bg-light rounded-3xl focus:ring-0 focus:border-0 outline-none"
-              />
-              <div
-                className={`p-4 cursor-pointer flex bg-light rounded-full ${
-                  !message && "pointer-events-none"
-                }`}
-                onClick={() => sendMessage()}
-              >
-                <LuSend size={25} />
+          <div className="lg:hidden" onClick={() => setShow2(true)}>
+            <LuPanelRightOpen size={23} />
+          </div>
+        </div>
+        {messages?.receiver?.fullName && (
+          <div className="w-[100%] bg-secondary h-[15%] rounded-full flex items-center px-10 justify-between py-5">
+            <div className="flex">
+              <div className="cursor-pointer">
+                <img src={logo} alt="logo" width={60} height={60} />
               </div>
-              <div
+              <div className="ml-3 pt-1">
+                <h3 className="text-lg capitalize">
+                  {messages?.receiver?.fullName}
+                </h3>
+                <p className="text-sm font-light text-gray-600">
+                  {messages?.receiver?.email}
+                </p>
+              </div>
+            </div>
+            <div
+              className="text-blue-400 font-semibold cursor-pointer"
+              onClick={handleLogout}
+            >
+              <h1>Logout</h1>
+            </div>
+            {/* <div className="cursor-pointer">
+                <FiPhoneOutgoing />
+              </div> */}
+          </div>
+        )}
+        <div className="h-[70%] overflow-scroll no-scrollbar  w-full shadow-sm">
+          <div className="p-5">
+            {messages?.messages?.length > 0 ? (
+              messages.messages.map(({ message, user: { id } = {} }) => {
+                return (
+                  <>
+                    <div
+                      className={`max-w-[50%] rounded-b-lg p-4 mb-7 ${
+                        id === user?.id
+                          ? "bg-primary rounded-tl-lg ml-auto text-white"
+                          : "bg-secondary rounded-tr-lg"
+                      }`}
+                    >
+                      {message}
+                    </div>
+                    <div ref={messageRef}></div>
+                  </>
+                );
+              })
+            ) : (
+              <div className="text-center text-lg font-semibold py-60">
+                No Messages or No Conversations Selected
+              </div>
+            )}
+          </div>
+        </div>
+        {messages?.receiver?.fullName && (
+          <div className="p-14  w-[100%] flex items-center h-[15%]">
+            <Input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type a message..."
+              className="w-full"
+              type="text"
+              inputClassName="p-4 border-0 shadow-lg bg-light rounded-3xl focus:ring-0 focus:border-0 outline-none"
+            />
+            <div
+              className={`p-4 cursor-pointer flex bg-light rounded-full ${
+                !message && "pointer-events-none"
+              }`}
+              onClick={() => sendMessage()}
+            >
+              <LuSend size={25} />
+            </div>
+            {/* <div
                 className={`p-4 cursor-pointer flex bg-light rounded-full ${
                   !message && "pointer-events-none"
                 }`}
               >
                 <IoIosAddCircleOutline size={25} />
-              </div>
-            </div>
-          )}
-        </div>
+              </div> */}
+          </div>
+        )}
       </div>
       {/* Large screen div */}
-      <div className="w-[25%] h-full lg:block hidden bg-light px-8 top-0 overflow-scroll no-scrollbar tog2 pt-3">
+      <div className="w-[25%] h-full lg:block hidden bg-light px-8 top-0 overflow-scroll no-scrollbar pt-3">
         <div className="text-primary text-lg">People</div>
         <div>
           {users.length > 0 ? (
@@ -436,12 +482,12 @@ const Dashboard = () => {
           )}
         </div>
       </div>
-      <div onClick={() => setShow2(!show2)} className="lg:hidden p-4">
-        <LuPanelRightOpen size={40} color="blue" />
-      </div>
       {/* md and sm screen div */}
-      {/* {!show2 && (
-        <div className="w-[100%] h-full z-1 lg:hidden bg-light px-8 py-16 overflow-scroll no-scrollbar ">
+      {show2 && (
+        <div className="w-screen z-50 h-screen fixed lg:hidden block bg-light px-8 top-0 overflow-scroll no-scrollbar pt-3">
+          <div className="lg:hidden pl-72" onClick={() => setShow2(false)}>
+            <LuPanelLeftOpen size={23} />
+          </div>
           <div className="text-primary text-lg">People</div>
           <div>
             {users.length > 0 ? (
@@ -449,7 +495,7 @@ const Dashboard = () => {
                 return (
                   <div className="flex items-center py-3 border-b border-b-gray-300">
                     <div
-                      className="cursor-pointer flex flex-col items-center"
+                      className="cursor-pointer flex items-center"
                       onClick={() => {
                         fetchMessages("new", user);
                       }}
@@ -458,7 +504,7 @@ const Dashboard = () => {
                         <img src={logo} alt="logo" width={60} height={60} />
                       </div>
                       <div className="ml-3">
-                        <h3 className="text-2xl font-semibold capitalize">
+                        <h3 className="text-lg font-semibold capitalize">
                           {user?.fullName}
                         </h3>
                         <p className="text-sm font-light text-gray-600">
@@ -476,7 +522,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

@@ -328,6 +328,27 @@ app.get("/api/users/:userId", async (req, res) => {
   }
 });
 
+// Add this route to your existing backend code
+app.post("/api/logout", async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    // Clear the token or any other authentication-related data
+    await Users.updateOne(
+      { _id: userId },
+      {
+        $set: { token: null },
+      }
+    );
+
+    res.status(200).send("Logout successful");
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 http.listen(port, () => {
   console.log("App listening on port: " + port);
 });

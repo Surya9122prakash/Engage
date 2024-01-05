@@ -10,7 +10,7 @@ const ProtectedRoute = ({ children,auth=false }) => {
     return <Navigate to="/login" />;
   } else if (
     isLoggedIn &&
-    ["/login", "/register"].includes(window.location.pathname)
+    (["/login", "/register"].includes(window.location.pathname))
   ) {
     console.log("Object :>> ");
     return <Navigate to="/" />;

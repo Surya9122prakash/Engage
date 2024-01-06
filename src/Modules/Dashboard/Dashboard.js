@@ -27,7 +27,8 @@ const Dashboard = () => {
       cors:{
         origin: 'https://engage-chat.vercel.app/',
         methods: ['GET', 'POST']
-      }
+      },
+      transports:["websocket","polling"]
     });
 
     socket.on("connect", () => {

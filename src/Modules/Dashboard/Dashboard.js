@@ -21,11 +21,7 @@ const Dashboard = () => {
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
   useEffect(() => {
-    const socket = io.connect("https://engage-chat.vercel.app",{
-      transports: ['polling'],
-      withCredentials:true,
-      forceNew:true
-    });
+    const socket = io.connect("https://engage-omega.vercel.app");
 
     socket.on("connect", () => {
       console.log("Connected to Socket.IO");

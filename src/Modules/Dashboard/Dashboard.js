@@ -22,7 +22,7 @@ const Dashboard = () => {
   const [show2, setShow2] = useState(false);
   useEffect(() => {
     const socket = io.connect("https://engage-chat.vercel.app",{
-      transports: ['websocket'],
+      transports: ['polling'],
       withCredentials:true,
       forceNew:true
     });

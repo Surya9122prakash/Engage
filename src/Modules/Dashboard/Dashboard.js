@@ -26,6 +26,7 @@ const Dashboard = () => {
       withCredentials:true,
       cors:{
         origin: 'https://engage-chat.vercel.app/',
+        methods: ['GET', 'POST']
       }
     });
 

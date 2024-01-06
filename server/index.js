@@ -12,7 +12,8 @@ const cors = require("cors");
 const http = require('http').createServer(app);
 const io = require("socket.io")(http,{
   cors:{
-    origin:"https://engage-omega.vercel.app/"
+    origin:"https://engage-omega.vercel.app/",
+    credentials:true
   }
 });
 const user = Users.find()

@@ -16,7 +16,7 @@ const Form = ({ isLogInPage = false }) => {
     e.preventDefault();
     console.log("data :>> ", data);
     const res = await fetch(
-      `http://localhost:8000/api/${isLogInPage ? "login" : "register"}`,
+      `http://engage-omega.vercel.app/api/${isLogInPage ? "login" : "register"}`,
       {
         method: "POST",
         headers: {

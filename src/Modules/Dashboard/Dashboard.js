@@ -21,7 +21,7 @@ const Dashboard = () => {
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
   useEffect(() => {
-    const socket = io("http://localhost:8000", {
+    const socket = io("http://engage-omega.vercel.app", {
       transports: ["websocket"],
     });
 
@@ -76,7 +76,7 @@ const Dashboard = () => {
     const loggedInUser = JSON.parse(localStorage.getItem("user:detail"));
     const fetchConversations = async () => {
       const res = await fetch(
-        `http://localhost:8000/api/conversation/${loggedInUser?.id}`,
+        `http://engage-omega.vercel.app/api/conversation/${loggedInUser?.id}`,
         {
           method: "GET",
           headers: {
@@ -93,7 +93,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch(`http://localhost:8000/api/users/${user?.id}`, {
+      const res = await fetch(`http://engage-omega.vercel.app/api/users/${user?.id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -107,7 +107,7 @@ const Dashboard = () => {
 
   const fetchMessages = async (conversationId, receiver) => {
     const res = await fetch(
-      `http://localhost:8000/api/message/${conversationId}?senderId=${user?.id}&&receiverId=${receiver?.receiverId}`,
+      `http://engage-omega.vercel.app/api/message/${conversationId}?senderId=${user?.id}&&receiverId=${receiver?.receiverId}`,
       {
         method: "GET",
         headers: {
@@ -132,7 +132,7 @@ const Dashboard = () => {
       message,
       conversationId: messages?.conversationId,
     });
-    await fetch(`http://localhost:8000/api/message`, {
+    await fetch(`http://engage-omega.vercel.app/api/message`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -152,7 +152,7 @@ const Dashboard = () => {
       // Assuming you have user stored in state
       const userId = user?.id;
 
-      const response = await fetch("http://localhost:8000/api/logout", {
+      const response = await fetch("http://engage-omega.vercel.app/api/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

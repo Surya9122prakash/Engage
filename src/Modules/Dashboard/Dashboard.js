@@ -22,7 +22,8 @@ const Dashboard = () => {
   const [show2, setShow2] = useState(false);
   useEffect(() => {
     const socket = io.connect("https://engage-omega.vercel.app",{
-      transports:["polling"]
+      transports:["polling"],
+      withCredentials:true
     });
 
     socket.on("connect", () => {

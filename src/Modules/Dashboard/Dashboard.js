@@ -23,7 +23,9 @@ const Dashboard = () => {
   useEffect(() => {
     const socket = io("https://engage-omega.vercel.app", {
       transports: ["websocket"],
-    });
+    },{cors:{
+      origin:"https://engage-chat.vercel.app/"
+    }});
 
     socket.on("connect", () => {
       console.log("Connected to Socket.IO");

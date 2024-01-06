@@ -26,7 +26,7 @@ const Form = ({ isLogInPage = false }) => {
       }
     );
     if (res.status === 400) {
-      alert("Invalid Credentials");
+      isLogInPage ? alert("Invalid Credentials") : alert("User Already Exists");
     } else {
       const resData = await res.json();
       console.log("data :>> ", resData);
@@ -34,12 +34,14 @@ const Form = ({ isLogInPage = false }) => {
         localStorage.setItem("user:token", resData.token);
         localStorage.setItem("user:detail",JSON.stringify(resData.user));
         navigate("/");
+      } else{
+        navigate("/login");
       }
     }
   };
   return (
     <div className="bg-light h-screen flex items-center justify-center">
-      <div className="bg-white w-[500px] h-[600px] shadow-lg rounded-lg flex flex-col justify-center items-center">
+      <div className="bg-white w-[500px] h-[600px] shadow-lg rounded-lg flex flex-col justify-center items-center lg:m-0 m-5">
         <div className="text-2xl font-extrabold mb-10">
           {isLogInPage ? "Login" : "Register"}
         </div>
@@ -50,6 +52,7 @@ const Form = ({ isLogInPage = false }) => {
           {!isLogInPage && (
             <Input
               label="Full Name"
+              type="text"
               name="name"
               placeholder="Enter your Full Name"
               className="mb-6 w-[75%]"
@@ -60,6 +63,7 @@ const Form = ({ isLogInPage = false }) => {
           <Input
             label="Email Address"
             name="email"
+            type="email"
             placeholder="Enter your Email Address"
             className="mb-6 w-[75%]"
             value={data.email}
@@ -67,6 +71,7 @@ const Form = ({ isLogInPage = false }) => {
           />
           <Input
             label="Password"
+            type="password"
             name="password"
             placeholder="Enter your Password"
             className="mb-10 w-[75%]"

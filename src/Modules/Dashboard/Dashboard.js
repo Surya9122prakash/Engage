@@ -17,10 +17,9 @@ const Dashboard = () => {
   const [message, setMessage] = useState("");
   const [users, setUsers] = useState([]);
   const [socket, setSocket] = useState(null);
-  const messageRef = useRef();
+  const messageRef = useRef(null);
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
-
   useEffect(() => {
     const socket = io("http://localhost:8000", {
       transports: ["websocket"],
@@ -64,7 +63,13 @@ const Dashboard = () => {
   }, [socket]);
 
   useEffect(() => {
-    messageRef?.current?.scrollIntoView({ behavior: "smooth" });
+    if (messageRef.current) {
+      messageRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start",
+      });
+    }
   }, [messages?.messages]);
 
   useEffect(() => {
@@ -127,7 +132,7 @@ const Dashboard = () => {
       message,
       conversationId: messages?.conversationId,
     });
-    const res = await fetch(`http://localhost:8000/api/message`, {
+    await fetch(`http://localhost:8000/api/message`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -174,6 +179,17 @@ const Dashboard = () => {
     <div className="w-screen h-screen flex flex-row no-scrollbar">
       {/* large screen div */}
       <div className="w-[25%] h-full bg-secondary overflow-scroll no-scrollbar lg:block hidden">
+        <div className="flex justify-between px-5">
+          <div className="text-blue-400 flex text-2xl font-semibold cursor-pointer pt-4">
+            <img src="logo.png" alt="Engage" width={40} height={10} />
+            <h1 className="pt-1">Engage</h1>
+          </div>
+          <div className="text-white font-semibold cursor-pointer pt-5 text-xl">
+            <h1 onClick={handleLogout} className="bg-blue-400 p-1 rounded-2xl">
+              Logout
+            </h1>
+          </div>
+        </div>
         <div className="flex mx-10 items-center my-8">
           <div className="border border-primary p-2 rounded-full">
             <img src={logo} alt="logo" width={75} height={75} />
@@ -226,7 +242,20 @@ const Dashboard = () => {
           <div className="pl-6 pt-3" onClick={() => setShow1(false)}>
             <LuPanelRightOpen size={23} />
           </div>
-
+          <div className="flex justify-between px-5">
+            <div className="text-blue-400 flex text-lg font-semibold cursor-pointer pt-4">
+              <img src="logo.png" alt="Engage" width={40} height={10} />
+              <h1 className="pt-1">Engage</h1>
+            </div>
+            <div className="text-white font-semibold cursor-pointer pt-4 text-lg">
+              <h1
+                onClick={handleLogout}
+                className="bg-blue-400 p-1 rounded-2xl"
+              >
+                Logout
+              </h1>
+            </div>
+          </div>
           <div className="flex mx-10 items-center my-8">
             <div className="border border-primary p-2 rounded-full">
               <img src={logo} alt="logo" width={75} height={75} />
@@ -291,24 +320,22 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            <div
-              className="text-blue-400 font-semibold cursor-pointer"
-              onClick={handleLogout}
-            >
-              <h1>Logout</h1>
-            </div>
             {/* <div className="cursor-pointer">
                 <FiPhoneOutgoing />
               </div> */}
           </div>
         )}
-        <div className="h-[70%] overflow-scroll no-scrollbar  w-full shadow-sm">
+        <div
+          className="h-[70%] overflow-scroll no-scrollbar  w-full shadow-sm"
+          ref={messageRef}
+        >
           <div className="p-5">
             {messages?.messages?.length > 0 ? (
-              messages.messages.map(({ message, user: { id } = {} }) => {
+              messages.messages.map(({ message, user: { id } = {} }, index) => {
                 return (
                   <>
                     <div
+                      ref={messageRef}
                       className={`max-w-[50%] rounded-b-lg p-4 mb-7 ${
                         id === user?.id
                           ? "bg-primary rounded-tl-lg ml-auto text-white"
@@ -317,7 +344,6 @@ const Dashboard = () => {
                     >
                       {message}
                     </div>
-                    <div ref={messageRef}></div>
                   </>
                 );
               })
@@ -357,13 +383,13 @@ const Dashboard = () => {
         )}
       </div>
       {/* md and sm screen div */}
-      <div className="w-screen lg:hidden items-center block relative h-full overflow-hidden bg-white flex-col px-4 pt-16">
+      <div className="w-screen lg:hidden items-center block relative h-full overflow-hidden bg-white flex-col px-4 pt-8 pb-10">
         <div className="flex justify-between">
           <div className="lg:hidden" onClick={() => setShow1(true)}>
-            <LuPanelLeftOpen size={23} />
+            <LuPanelLeftOpen size={23} color="blue" />
           </div>
           <div className="lg:hidden" onClick={() => setShow2(true)}>
-            <LuPanelRightOpen size={23} />
+            <LuPanelRightOpen size={23} color="blue" />
           </div>
         </div>
         {messages?.receiver?.fullName && (
@@ -381,24 +407,22 @@ const Dashboard = () => {
                 </p>
               </div>
             </div>
-            <div
-              className="text-blue-400 font-semibold cursor-pointer"
-              onClick={handleLogout}
-            >
-              <h1>Logout</h1>
-            </div>
             {/* <div className="cursor-pointer">
                 <FiPhoneOutgoing />
               </div> */}
           </div>
         )}
-        <div className="h-[70%] overflow-scroll no-scrollbar  w-full shadow-sm">
+        <div
+          className="h-[70%] overflow-scroll no-scrollbar  w-full shadow-sm"
+          ref={messageRef}
+        >
           <div className="p-5">
             {messages?.messages?.length > 0 ? (
-              messages.messages.map(({ message, user: { id } = {} }) => {
+              messages.messages.map(({ message, user: { id } = {} }, index) => {
                 return (
                   <>
                     <div
+                      key={index}
                       className={`max-w-[50%] rounded-b-lg p-4 mb-7 ${
                         id === user?.id
                           ? "bg-primary rounded-tl-lg ml-auto text-white"
@@ -407,7 +431,6 @@ const Dashboard = () => {
                     >
                       {message}
                     </div>
-                    <div ref={messageRef}></div>
                   </>
                 );
               })

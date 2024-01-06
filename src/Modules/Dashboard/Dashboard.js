@@ -7,6 +7,7 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { io } from "socket.io-client";
 import { LuPanelLeftOpen } from "react-icons/lu";
 import { LuPanelRightOpen } from "react-icons/lu";
+import cors from "cors";
 
 const Dashboard = () => {
   const [user, setUser] = useState(
@@ -24,7 +25,10 @@ const Dashboard = () => {
     const socket = io.connect("https://engage-omega.vercel.app",{
       transports: ['websocket'],
       withCredentials:true,
-      forceNew:true
+      forceNew:true,
+      cors:{
+        origin: 'https://engage-chat.vercel.app/',
+      }
     });
 
     socket.on("connect", () => {

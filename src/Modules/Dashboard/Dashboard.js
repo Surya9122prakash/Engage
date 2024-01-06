@@ -21,10 +21,10 @@ const Dashboard = () => {
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
   useEffect(() => {
-    const socket = io("https://engage-omega.vercel.app",{
+    const socket = io("https://engage-chat.vercel.app",{
       transports: ['websocket'],
       withCredentials:true,
-      rejectUnauthorized: null
+      forceNew:true
     });
 
     socket.on("connect", () => {

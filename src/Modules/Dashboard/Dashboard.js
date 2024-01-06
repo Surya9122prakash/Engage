@@ -28,7 +28,8 @@ const Dashboard = () => {
         origin: 'https://engage-chat.vercel.app/',
         methods: ['GET', 'POST']
       },
-      transports:["websocket","polling"]
+      transports:["websocket","polling"],
+      forceNew:true
     });
 
     socket.on("connect", () => {

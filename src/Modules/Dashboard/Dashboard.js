@@ -23,7 +23,8 @@ const Dashboard = () => {
   useEffect(() => {
     const socket = io("https://engage-omega.vercel.app",{
       transports: ['websocket'],
-      withCredentials:true
+      withCredentials:true,
+      rejectUnauthorized: null
     });
 
     socket.on("connect", () => {

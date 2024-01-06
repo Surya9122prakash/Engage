@@ -27,7 +27,10 @@ const port = process.env.PORT || 8000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
-  cors()
+  cors({
+    origin: 'https://engage-chat.vercel.app',
+    credentials: true, // You might also need to enable credentials
+  })
 );
 
 let users = [];

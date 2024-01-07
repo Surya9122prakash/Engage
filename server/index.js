@@ -10,14 +10,13 @@ const Conversation = require("./models/Conversations");
 const Messages = require("./models/Messages");
 const cors = require("cors");
 const http = require('http').createServer(app);
-const io = require("socket.io")(http,{
-  cors:{
-    origin:"https://engage-chat.vercel.app",
+const io = require("socket.io")(http,{pingTimeout: 60000},{
+  cors: {
+    origin: "https://engage-chat.vercel.app",
     methods: ["GET", "POST"],
-    transports: ['polling'],
-    credentials:true
+    transports: ['websocket'],
+    credentials: true
   },
-  allowEI03:true
 });
 const user = Users.find()
 

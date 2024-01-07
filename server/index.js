@@ -9,13 +9,14 @@ const jwt = require("jsonwebtoken");
 const Conversation = require("./models/Conversations");
 const Messages = require("./models/Messages");
 const cors = require("cors");
-const http = require('http').createServer(app);
-const io = require("socket.io")(http,{
+const http = require("http").createServer(app);
+const io = require("socket.io")(http, {
   cors: {
     origin: "https://engage-chat.vercel.app",
   },
+  transports: ["polling"],
 });
-const user = Users.find()
+const user = Users.find();
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -28,7 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: 'https://engage-chat.vercel.app',
+    origin: "https://engage-chat.vercel.app",
     credentials: true, // You might also need to enable credentials
   })
 );
@@ -51,7 +52,7 @@ io.on("connection", (socket) => {
       const receiver = users.find((user) => user.userId === receiverId);
       const sender = users.find((user) => user.userId === senderId);
       const user = await Users.findById(senderId);
-      console.log("sender :>> ", sender,receiver);
+      console.log("sender :>> ", sender, receiver);
       if (receiver) {
         io.to(receiver.socketId)
           .to(sender.socketId)
@@ -62,15 +63,14 @@ io.on("connection", (socket) => {
             receiverId,
             user: { id: user._id, fullName: user.fullName, email: user.email },
           });
-      } else{
-        io.to(sender.socketId)
-          .emit("getMessage", {
-            senderId,
-            message,
-            conversationId,
-            receiverId,
-            user: { id: user._id, fullName: user.fullName, email: user.email },
-          });
+      } else {
+        io.to(sender.socketId).emit("getMessage", {
+          senderId,
+          message,
+          conversationId,
+          receiverId,
+          user: { id: user._id, fullName: user.fullName, email: user.email },
+        });
       }
     }
   );
@@ -102,7 +102,9 @@ app.post("/api/register", async (req, res, next) => {
           newUser.save();
           next();
         });
-        return res.status(200).send({message:"User Registered Successfully"});
+        return res
+          .status(200)
+          .send({ message: "User Registered Successfully" });
       }
     }
   } catch (err) {
@@ -280,17 +282,19 @@ app.get("/api/conversation/:userId", async (req, res) => {
 //   }
 // });
 
-app.post('/api/message', async (req, res) => {
+app.post("/api/message", async (req, res) => {
   try {
-    const { conversationId, senderId, message, receiverId = '' } = req.body;
+    const { conversationId, senderId, message, receiverId = "" } = req.body;
 
     if (!senderId || !message) {
-      return res.status(400).send('Please fill all required fields');
+      return res.status(400).send("Please fill all required fields");
     }
 
-    if (conversationId === 'new') {
+    if (conversationId === "new") {
       if (!receiverId) {
-        return res.status(400).send('Please provide a receiverId for the new conversation');
+        return res
+          .status(400)
+          .send("Please provide a receiverId for the new conversation");
       }
 
       // Check if a conversation exists between these users
@@ -300,30 +304,39 @@ app.post('/api/message', async (req, res) => {
 
       if (existingConversation) {
         // If a conversation already exists, use its ID
-        const newMessage = new Messages({ conversationId: existingConversation._id, senderId, message });
+        const newMessage = new Messages({
+          conversationId: existingConversation._id,
+          senderId,
+          message,
+        });
         await newMessage.save();
-        return res.status(200).send('Message sent successfully');
+        return res.status(200).send("Message sent successfully");
       }
 
       // If no conversation exists, create a new one
-      const newConversation = new Conversation({ members: [senderId, receiverId] });
+      const newConversation = new Conversation({
+        members: [senderId, receiverId],
+      });
       await newConversation.save();
-      const newMessage = new Messages({ conversationId: newConversation._id, senderId, message });
+      const newMessage = new Messages({
+        conversationId: newConversation._id,
+        senderId,
+        message,
+      });
       await newMessage.save();
-      return res.status(200).send('Message sent successfully');
+      return res.status(200).send("Message sent successfully");
     } else if (!conversationId) {
-      return res.status(400).send('Please provide a valid conversationId');
+      return res.status(400).send("Please provide a valid conversationId");
     }
 
     const newMessage = new Messages({ conversationId, senderId, message });
     await newMessage.save();
-    return res.status(200).send('Message sent successfully');
+    return res.status(200).send("Message sent successfully");
   } catch (error) {
-    console.log(error, 'Error');
-    return res.status(500).send('Internal server error');
+    console.log(error, "Error");
+    return res.status(500).send("Internal server error");
   }
 });
-
 
 app.get("/api/message/:conversationId", async (req, res) => {
   try {
@@ -361,7 +374,7 @@ app.get("/api/message/:conversationId", async (req, res) => {
 app.get("/api/users/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
-    const users = await Users.find({ _id: { $ne:  userId} });
+    const users = await Users.find({ _id: { $ne: userId } });
     // console.log("Users:>> ", users)
     const usersData = Promise.all(
       users.map(async (user) => {
@@ -399,7 +412,6 @@ app.post("/api/logout", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 http.listen(port, () => {
   console.log("App listening on port: " + port);

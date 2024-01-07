@@ -40,10 +40,7 @@ const Dashboard = () => {
     //   console.error("Socket.IO connection error:", err);
     // });
 
-    setSocket(io("https://engage-omega.vercel.app",{
-      transports:["polling"],
-      withCredentials:true
-    }));
+    setSocket(io("https://engage-omega.vercel.app"));
   }, []);
 
   useEffect(() => {

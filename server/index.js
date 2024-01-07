@@ -14,7 +14,9 @@ const io = require("socket.io")(http,{
   cors:{
     origin:"https://engage-chat.vercel.app",
     methods: ["GET", "POST"],
-  }
+    transports: ['websocket', 'polling'],
+  },
+  allowEI03:true
 });
 const user = Users.find()
 

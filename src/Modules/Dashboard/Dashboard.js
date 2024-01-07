@@ -17,28 +17,35 @@ const Dashboard = () => {
   const [messages, setMessages] = useState({});
   const [message, setMessage] = useState("");
   const [users, setUsers] = useState([]);
-  // const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState(null);
   const messageRef = useRef(null);
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
-  const socket = useRef();
   useEffect(() => {
-    socket.current = io("https://engage-omega.vercel.app",{
-      transports:["websocket"]
-    });
+    // const socket = io("https://engage-omega.vercel.app",{
+    //   withCredentials:true,
+    //   cors:{
+    //     origin: 'https://engage-chat.vercel.app/',
+    //     methods: ['GET', 'POST']
+    //   },
+    //   transports:["websocket","polling"],
+    //   forceNew:true
+    // });
 
-    socket.current.on("connect", () => {
-      console.log("Connected to Socket.IO");
-    });
+    // socket.on("connect", () => {
+    //   console.log("Connected to Socket.IO");
+    // });
 
-    socket.current.on("connect_error", (err) => {
-      console.error("Socket.IO connection error:", err);
-    });
+    // socket.on("connect_error", (err) => {
+    //   console.error("Socket.IO connection error:", err);
+    // });
+
+    setSocket(io("https://engage-omega.vercel.app"));
   }, []);
 
   useEffect(() => {
-    socket.current?.emit("addUser", user?.id);
-    socket.current?.on("getUsers", (users) => {
+    socket?.emit("addUser", user?.id);
+    socket?.on("getUsers", (users) => {
       console.log("activeUsers:>>", users);
     });
 
@@ -51,7 +58,7 @@ const Dashboard = () => {
     //     ],
     //   }));
     // });
-    socket.current?.on("getMessage", (data) => {
+    socket?.on("getMessage", (data) => {
       setMessages((prev) => ({
         ...prev,
         messages: [
@@ -126,7 +133,7 @@ const Dashboard = () => {
 
   const sendMessage = async (e) => {
     if (!socket) return;
-    socket.current?.emit("sendMessage", {
+    socket?.emit("sendMessage", {
       senderId: user?.id,
       receiverId: messages?.receiver?.receiverId,
       message,

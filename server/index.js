@@ -1,42 +1,20 @@
 const express = require("express");
-import express from "express"
-import dotenv from "dotenv"
-import mongoose from "mongoose";
-import Users from "./models/Users";
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
-import Conversation from "./models/Conversations";
-import Messages from "./models/Messages";
-import cors from "cors"
-import {Server} from "socket.io"
-import { createServer } from "http";
-
-// const dotenv = require("dotenv");
+const dotenv = require("dotenv");
 dotenv.config();
 const app = express();
-// const mongoose = require("mongoose");
-// const Users = require("./models/Users");
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
-// const Conversation = require("./models/Conversations");
-// const Messages = require("./models/Messages");
-// const cors = require("cors");
-// const http = require('http').createServer(app);
-// const io = require("socket.io")(http,{
-//   cors:{
-//     origin:"https://engage-chat.vercel.app",
-//     credentials:true
-//   }
-// });
-
-const http = createServer(app);
-const io = new Server(http,{
+const mongoose = require("mongoose");
+const Users = require("./models/Users");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const Conversation = require("./models/Conversations");
+const Messages = require("./models/Messages");
+const cors = require("cors");
+const http = require('http').createServer(app);
+const io = require("socket.io")(http,{
   cors:{
-    origin:'*'
-  },
-  methods:['GET','POST','PUT','DELETE']
-})
-
+    origin:"https://engage-chat.vercel.app",
+  }
+});
 const user = Users.find()
 
 mongoose

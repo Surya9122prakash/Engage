@@ -14,7 +14,7 @@ const io = require("socket.io")(http,{pingTimeout: 60000},{
   cors: {
     origin: "https://engage-chat.vercel.app",
     methods: ["GET", "POST"],
-    transports: ['websocket'],
+    transports: ['polling'],
     credentials: true
   },
 });

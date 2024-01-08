@@ -41,7 +41,7 @@ const Dashboard = () => {
     // });
 
     setSocket(io("https://engage-omega.vercel.app"),{
-      transports:["websockets",polling]
+      transports:["websockets","polling"]
     });
   }, []);
 

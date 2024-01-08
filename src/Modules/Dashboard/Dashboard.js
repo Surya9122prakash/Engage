@@ -100,12 +100,15 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch(`https://engage-api.onrender.com/api/users/${user?.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `https://engage-api.onrender.com/api/users/${user?.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const resData = await res.json();
       setUsers(resData);
     };
@@ -159,13 +162,16 @@ const Dashboard = () => {
       // Assuming you have user stored in state
       const userId = user?.id;
 
-      const response = await fetch("https://engage-api.onrender.com/api/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId }),
-      });
+      const response = await fetch(
+        "https://engage-api.onrender.com/api/logout",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId }),
+        }
+      );
 
       if (response.ok) {
         // Clear user data from local storage

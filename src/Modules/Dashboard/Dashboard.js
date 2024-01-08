@@ -19,6 +19,7 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [socket, setSocket] = useState(null);
   const messageRef = useRef(null);
+  const mdmessageRef = useRef(null);
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
   useEffect(() => {
@@ -72,6 +73,15 @@ const Dashboard = () => {
   useEffect(() => {
     if (messageRef.current) {
       messageRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start",
+      });
+    }
+  }, [messages?.messages]);
+  useEffect(() => {
+    if (mdmessageRef.current) {
+      mdmessageRef.current.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
         inline: "start",
@@ -427,7 +437,7 @@ const Dashboard = () => {
         )}
         <div
           className="h-[70%] overflow-scroll no-scrollbar  w-full shadow-sm"
-          ref={messageRef}
+          ref={mdmessageRef}
         >
           <div className="p-5">
             {messages?.messages?.length > 0 ? (
@@ -435,7 +445,7 @@ const Dashboard = () => {
                 return (
                   <>
                     <div
-                      ref={messageRef}
+                      ref={mdmessageRef}
                       className={`max-w-[50%] rounded-b-lg p-4 mb-7 ${
                         id === user?.id
                           ? "bg-primary rounded-tl-lg ml-auto text-white"

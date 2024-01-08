@@ -429,7 +429,7 @@ const Dashboard = () => {
                 return (
                   <>
                     <div
-                      key={index}
+                      ref={messageRef}
                       className={`max-w-[50%] rounded-b-lg p-4 mb-7 ${
                         id === user?.id
                           ? "bg-primary rounded-tl-lg ml-auto text-white"

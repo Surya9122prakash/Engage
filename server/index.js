@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "https://engage-chat.vercel.app",
+    origin: "*",
     credentials: true, // You might also need to enable credentials
   })
 );

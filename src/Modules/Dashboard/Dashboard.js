@@ -40,9 +40,7 @@ const Dashboard = () => {
     //   console.error("Socket.IO connection error:", err);
     // });
 
-    setSocket(io("https://engage-omega.vercel.app"),{
-      transports:["websockets","polling"]
-    });
+    setSocket(io("https://engage-api.onrender.com/"));
   }, []);
 
   useEffect(() => {
@@ -85,7 +83,7 @@ const Dashboard = () => {
     const loggedInUser = JSON.parse(localStorage.getItem("user:detail"));
     const fetchConversations = async () => {
       const res = await fetch(
-        `https://engage-omega.vercel.app/api/conversation/${loggedInUser?.id}`,
+        `https://engage-api.onrender.com/api/conversation/${loggedInUser?.id}`,
         {
           method: "GET",
           headers: {
@@ -102,7 +100,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch(`https://engage-omega.vercel.app/api/users/${user?.id}`, {
+      const res = await fetch(`https://engage-api.onrender.com/api/users/${user?.id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +114,7 @@ const Dashboard = () => {
 
   const fetchMessages = async (conversationId, receiver) => {
     const res = await fetch(
-      `https://engage-omega.vercel.app/api/message/${conversationId}?senderId=${user?.id}&&receiverId=${receiver?.receiverId}`,
+      `https://engage-api.onrender.com/api/message/${conversationId}?senderId=${user?.id}&&receiverId=${receiver?.receiverId}`,
       {
         method: "GET",
         headers: {
@@ -141,7 +139,7 @@ const Dashboard = () => {
       message,
       conversationId: messages?.conversationId,
     });
-    await fetch(`https://engage-omega.vercel.app/api/message`, {
+    await fetch(`https://engage-api.onrender.com/api/message`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -161,7 +159,7 @@ const Dashboard = () => {
       // Assuming you have user stored in state
       const userId = user?.id;
 
-      const response = await fetch("https://engage-omega.vercel.app/api/logout", {
+      const response = await fetch("https://engage-api.onrender.com/api/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

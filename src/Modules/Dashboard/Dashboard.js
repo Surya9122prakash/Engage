@@ -263,7 +263,7 @@ const Dashboard = () => {
       {show1 && (
         <div className="w-screen z-50 h-screen fixed bg-secondary overflow-scroll no-scrollbar lg:hidden block">
           <div className="pl-6 pt-3" onClick={() => setShow1(false)}>
-            <LuPanelRightOpen size={23} />
+            <LuPanelRightOpen size={23} color="blue"/>
           </div>
           <div className="flex justify-between px-5">
             <div className="text-blue-400 flex text-lg font-semibold cursor-pointer pt-4">
@@ -532,7 +532,7 @@ const Dashboard = () => {
       {show2 && (
         <div className="w-screen z-50 h-screen fixed lg:hidden block bg-light px-8 top-0 overflow-scroll no-scrollbar pt-3">
           <div className="lg:hidden pl-72" onClick={() => setShow2(false)}>
-            <LuPanelLeftOpen size={23} />
+            <LuPanelLeftOpen size={23} color="blue" />
           </div>
           <div className="text-primary text-lg">People</div>
           <div>

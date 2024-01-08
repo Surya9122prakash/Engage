@@ -40,7 +40,7 @@ const Dashboard = () => {
     //   console.error("Socket.IO connection error:", err);
     // });
 
-    setSocket(io("http://engage-omega.vercel.app"));
+    setSocket(io("wss://engage-omega.vercel.app"));
   }, []);
 
   useEffect(() => {
